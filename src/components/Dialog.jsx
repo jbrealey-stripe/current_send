@@ -1,119 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import { Icon } from '../icons/SailIcons';
+import { useEffect } from 'react'
+import Button from './Button'
 
-const Dialog = ({
+export default function Dialog({
   open,
   onClose,
   title,
-  subtitle,
-  footer,
-  size = 'medium',
+  description,
   children,
-  className = '',
-  overlayClassName = '',
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
-
-  const sizes = {
-    small: 'max-w-[368px]',
-    medium: 'max-w-[496px]',
-    large: 'max-w-[648px]',
-    xlarge: 'max-w-[944px]',
-    full: 'w-[calc(100vw-32px)] h-[calc(100vh-32px)]',
-  };
-
-  // Handle open/close state with animation
+  footer,
+  width = 'max-w-lg',
+}) {
   useEffect(() => {
     if (open) {
-      setIsVisible(true);
-      setIsClosing(false);
-    } else if (isVisible) {
-      setIsClosing(true);
-      const timer = setTimeout(() => {
-        setIsVisible(false);
-        setIsClosing(false);
-      }, 150);
-      return () => clearTimeout(timer);
-    }
-  }, [open]);
-
-  // Handle escape key
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape' && open) {
-        onClose?.();
-      }
-    };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [open, onClose]);
-
-  // Prevent body scroll when open, but keep scrollbar gutter to avoid layout shift
-  useEffect(() => {
-    if (isVisible) {
-      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden'
     } else {
-      document.documentElement.style.overflow = '';
+      document.body.style.overflow = ''
     }
-    return () => {
-      document.documentElement.style.overflow = '';
-    };
-  }, [isVisible]);
+    return () => { document.body.style.overflow = '' }
+  }, [open])
 
-  if (!isVisible) return null;
-
-  const hasHeader = title || subtitle;
+  if (!open) return null
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center ${isClosing ? 'animate-[fadeOut_150ms_ease-in_forwards]' : 'animate-[fadeIn_150ms_ease-out]'} ${overlayClassName}`}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-overlay-backdrop"
+        className="absolute inset-0 bg-black/40"
         onClick={onClose}
       />
-
-      {/* Dialog */}
-      <div
-        className={`relative bg-surface rounded-lg shadow-xl ${size !== 'full' ? 'w-full' : ''} ${isClosing ? 'animate-[scaleOut_150ms_ease-in_forwards]' : 'animate-[scaleIn_150ms_ease-out]'} ${sizes[size]} ${className}`}
-        role="dialog"
-        aria-modal="true"
-      >
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 size-7 flex items-center justify-center rounded text-icon-subdued hover:bg-offset transition-colors cursor-pointer"
-          aria-label="Close"
-        >
-          <Icon name="cancel" size="xxsmall" fill="currentColor" />
-        </button>
-
+      {/* Panel */}
+      <div className={`relative bg-white rounded-xl shadow-xl ${width} w-full mx-4`}>
         {/* Header */}
-        {hasHeader && (
-          <div className="px-[16px] pt-[16px] pb-4">
-            {title && (
-              <h2 className="text-body-large-emphasized text-default pr-8">{title}</h2>
-            )}
-            {subtitle && (
-              <p className="mt-1 text-body-small text-subdued">{subtitle}</p>
+        {(title || onClose) && (
+          <div className="flex items-center justify-between px-6 pt-6 pb-2">
+            <div>
+              {title && <h2 className="text-lg font-semibold text-gray-900">{title}</h2>}
+              {description && <p className="text-sm text-gray-500 mt-1">{description}</p>}
+            </div>
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </button>
             )}
           </div>
         )}
-
-        {/* Content */}
-        <div className={`px-[16px] ${hasHeader ? 'pb-[16px]' : 'py-[16px]'} ${footer ? '' : 'pb-[16px]'}`}>
+        {/* Body */}
+        <div className="px-6 py-4">
           {children}
         </div>
-
         {/* Footer */}
         {footer && (
-          <div className="px-[16px] py-4">
+          <div className="flex items-center justify-end gap-3 px-6 pb-6">
             {footer}
           </div>
         )}
       </div>
     </div>
-  );
-};
-
-export default Dialog;
+  )
+}

@@ -1,22 +1,16 @@
-import { Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import prototypes from './prototypes/index';
-import PrototypeList from './PrototypeList';
+import { Routes, Route } from 'react-router-dom'
+import Home from './pages/Home'
+import Prototype1 from './prototypes/prototype-1/Prototype1'
+import Prototype2 from './prototypes/prototype-2/Prototype2'
 
-export default function App() {
+function App() {
   return (
-    <Suspense fallback={null}>
-      <Routes>
-        {prototypes.map((p) => (
-          <Route
-            key={p.id}
-            path={`${p.id}/*`}
-            element={<p.component basePath={`/${p.id}`} />}
-          />
-        ))}
-        <Route path="/" element={<PrototypeList prototypes={prototypes} />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Suspense>
-  );
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/prototype-1/*" element={<Prototype1 />} />
+      <Route path="/prototype-2/*" element={<Prototype2 />} />
+    </Routes>
+  )
 }
+
+export default App

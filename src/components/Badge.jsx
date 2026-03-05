@@ -1,23 +1,16 @@
-import React from 'react';
+const colors = {
+  gray: 'text-gray-600 bg-gray-50 border-gray-200',
+  blue: 'text-blue-600 bg-blue-50 border-blue-200',
+  green: 'text-green-600 bg-green-50 border-green-200',
+  red: 'text-red-600 bg-red-50 border-red-200',
+  indigo: 'text-indigo-600 bg-indigo-50 border-indigo-200',
+  orange: 'text-orange-600 bg-orange-50 border-orange-200',
+}
 
-const Badge = ({ children, variant = 'default', className = '' }) => {
-  // Map variants to Tailwind theme colors
-  const variants = {
-    default: 'text-badge-default-text bg-badge-default-bg border-badge-default-border',
-    success: 'text-badge-success-text bg-badge-success-bg border-badge-success-border',
-    warning: 'text-badge-warning-text bg-badge-warning-bg border-badge-warning-border',
-    danger: 'text-badge-danger-text bg-badge-danger-bg border-badge-danger-border',
-    info: 'text-badge-info-text bg-badge-info-bg border-badge-info-border',
-    new: `text-brand bg-brand-50 border-brand-50`,
-  };
-
+export default function Badge({ children, color = 'gray', className = '' }) {
   return (
-    <span
-      className={`inline-flex items-center px-1.5 py-0.5 text-label-small rounded-sm border ${variants[variant] || variants.default} ${className}`}
-    >
+    <span className={`inline-flex items-center px-2 py-0.5 text-xs font-medium rounded border ${colors[color]} ${className}`}>
       {children}
     </span>
-  );
-};
-
-export default Badge;
+  )
+}
